@@ -1,0 +1,43 @@
+.is-borderless {
+  border: none !important;
+}
+
+.navbar-menu.is-active {
+  overflow-x: scroll;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+button.fab {
+  border-radius: 100%;
+  width: 3rem;
+  height: 3rem;
+}
+
+.fab-area {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+
+  display: flex;
+  align-items: center;
+}
+
+.input.link {
+  opacity: 0;
+  visibility: hidden;
+
+  width: 20rem;
+  transition: opacity 0.2s;
+}
+
+.input.link.visible {
+  opacity: 1;
+  visibility: visible;
+}
