@@ -12,7 +12,7 @@ const f = feed();
 const feedItems = getFeed(f);
 let processed;
 parseFeed(feedItems).then((x) => {
-  processed = x;
+  processed = x.filter(Boolean);
   m.redraw();
 });
 
@@ -85,28 +85,70 @@ m.mount(document.body, {
           //   : "waiting...",
           processed
             ? processed.map((item) =>
-                m(
-                  "div",
-                  { class: "block" },
-                  m("article", { class: "media" }, [
-                    m(
+                item.error
+                  ? m(
                       "div",
-                      { class: "media-content" },
-                      m("div", { class: "content" }, [
+                      { class: "block" },
+                      m("div", { class: "notification is-danger" }, [
+                        m("button", {
+                          class: "delete",
+                          onclick({ target }) {
+                            const $notification = target.parentNode;
+                            $notification.parentNode.removeChild($notification);
+                          },
+                        }),
                         m("p", [
-                          m("strong", item.title),
-                          " ",
-                          m(
-                            "small",
-                            timeAgo(new Date(item.date)),
-                          ),
-                        m("br"),
-                        m("div", {class: "content"}, m.trust(truncate(item.description || "", 300)))
+                          m("strong", [
+                            "Error trying to process feed ",
+                            item.item
+                              ? m("a", { href: item.item }, item.item)
+                              : "<unknown>",
+                            ": ",
+                          ]),
+                          item.error.message,
                         ]),
                       ]),
-                    ),
-                  ]),
-                ),
+                    )
+                  : [
+                      m(
+                        "div",
+                        { class: "block" },
+                        m("article", { class: "media" }, [
+                          m(
+                            "div",
+                            { class: "media-content" },
+                            m("div", { class: "content" }, [
+                              m("p", [
+                                m(
+                                  "a",
+                                  {
+                                    class: "has-text-link-light",
+                                    target: "_blank",
+                                    href: item.link,
+                                  },
+                                  m("strong", item.title),
+                                ),
+                                " ",
+                                m("small", timeAgo(new Date(item.date))),
+                                m("small", [
+                                  " • via ",
+                                  item.creator || item.source,
+                                ]),
+                                m("br"),
+                                m(
+                                  "div",
+                                  { class: "feed-content mt-4" },
+                                  m.trust(
+                                    truncate(item.description || "", 300),
+                                  ),
+                                ),
+                              ]),
+                            ]),
+                          ),
+                        ]),
+                      ),
+                      m("hr"),
+                    ],
               )
             : "waiting..",
         ),

@@ -41,3 +41,13 @@ button.fab {
   opacity: 1;
   visibility: visible;
 }
+
+.feed-content h1,
+.feed-content h2,
+.feed-content h3,
+.feed-content h4,
+.feed-content h5,
+.feed-content h6 {
+  font-weight: bold;
+  font-size: 1rem;
+}

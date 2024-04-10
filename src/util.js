@@ -10,24 +10,35 @@ export const parseFeed = async (feed) => {
       .then((response) => response.text())
       .then((str) => new window.DOMParser().parseFromString(str, "text/xml"))
       .then((data) => {
+        console.log(data);
         const items = Array.from(data.querySelectorAll("item"));
-        const source = data.querySelector("channel>title").innerHTML;
+        if (!items) return [];
+        const source = repairCDATA(
+          data.querySelector("channel>title")?.innerHTML,
+        );
 
         return items.map((e) => {
           return {
             source,
-            title: e.querySelector("title")?.innerHTML,
-            link: e.querySelector("link")?.innerHTML,
-            creator: e.querySelector("dc\\:creator")?.innerHTML,
-            date: e.querySelector("pubDate")?.innerHTML,
-            description: decodeEntities(
-              e.querySelector("description")?.innerHTML || "",
+            title: repairCDATA(e.querySelector("title")?.innerHTML || ""),
+            link: repairCDATA(e.querySelector("link")?.innerHTML || ""),
+            creator: repairCDATA(
+              // FIXME:
+              e.querySelector("dc\\:creator")?.innerHTML || "",
             ),
-            categories: [...e.querySelectorAll("category")].map(
-              (x) => x.innerHTML,
+            date: repairCDATA(e.querySelector("pubDate")?.innerHTML || ""),
+            description: repairCDATA(
+              decodeEntities(e.querySelector("description")?.innerHTML || ""),
+            ),
+            categories: [...e.querySelectorAll("category")].map((x) =>
+              repairCDATA(x?.innerHTML || ""),
             ),
           };
         });
+      })
+      .catch((error) => {
+        console.error("Error parsing", item, error);
+        all.unshift({ item, error });
       });
 
     all = all.concat(f);
@@ -42,4 +53,7 @@ export function decodeEntities(encodedString) {
   return textArea.value;
 }
 
-export const truncate = (input, len) => input.length > len ? `${input.substring(0, len)}...` : input;
+export const truncate = (input, len) =>
+  input.length > len ? `${input.substring(0, len)}...` : input;
+
+export const repairCDATA = (text) => text.replace(/<!\[CDATA\[(.*?)]]>/g, "$1");
