@@ -4,7 +4,7 @@ import { feed } from "./state";
 
 export default function Navbar() {
   return {
-    view() {
+    view(vnode) {
       return [
         m(
           "nav",
@@ -46,26 +46,32 @@ export default function Navbar() {
               ),
             ]),
             m("div", { id: "navbarBasicExample", class: "navbar-menu" }, [
-              m("div", { class: "navbar-start ml-6" }, [
-                m("div", { class: "tabs" }, [
-                  m(
-                    "ul",
-                    { class: "is-borderless" },
-                    Object.keys(getFeeds()).map((title) =>
-                      m(
-                        "li",
-                        {
-                          class: feed() == title ? "is-active" : void 0,
-                          onclick() {
-                            feed(title);
-                          },
-                        },
-                        m("a", { class: "navbar-item" }, title),
-                      ),
-                    ),
-                  ),
-                ]),
-              ]),
+              m(
+                "div",
+                { class: "navbar-start ml-6" },
+                [
+                  vnode.attrs.feeds
+                    ? m("div", { class: "tabs" }, [
+                        m(
+                          "ul",
+                          { class: "is-borderless" },
+                          Object.keys(getFeeds()).map((title) =>
+                            m(
+                              "li",
+                              {
+                                class: feed() == title ? "is-active" : void 0,
+                                onclick() {
+                                  feed(title);
+                                },
+                              },
+                              m("a", { class: "navbar-item" }, title),
+                            ),
+                          ),
+                        ),
+                      ])
+                    : null,
+                ].filter(Boolean),
+              ),
             ]),
           ],
         ),

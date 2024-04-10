@@ -19,7 +19,11 @@ export const addToFeed = (id, feed) => {
   _set(feeds);
 };
 
-export const removeFromFeed = () => {};
+export const removeFromFeed = (id, feed) => {
+  const feeds = _getAll();
+  if (feeds[id]) feeds[id] = feeds[id].filter((f) => f !== feed);
+  _set(feeds);
+};
 
 //////////////////////////////////////////////////////////////////////
 // Internal //////////////////////////////////////////////////////////
