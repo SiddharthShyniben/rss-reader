@@ -55,34 +55,6 @@ m.mount(document.body, {
         m(
           "div",
           { class: "container" },
-          // processed
-          //   ? processed.map((item) =>
-          //       m("div", { class: "block" }, [
-          //         m("div", { class: "card" }, [
-          //           m("div", { class: "card-content" }, [
-          //             m(
-          //               "p",
-          //               { class: "is-size-6" },
-          //               item.categories
-          //                 .flatMap((x) => [m("a", "#" + x), ", "])
-          //                 .slice(0, -1),
-          //             ),
-          //             m("h2", { class: "title my-2" }, item.title),
-          //             m("p", { class: "subtitle" }, item.source),
-          //             // m("div", { class: "content" }, m.trust(item.description)),
-          //           ]),
-          //         ]),
-          //       ]),
-          //     )
-          //   : "waiting...",
-          // processed
-          //   ? m("table", { class: "table" }, [
-          //       m(
-          //         "tbody",
-          //         processed.map((item) => m("tr", [m("td", item.title)])),
-          //       ),
-          //     ])
-          //   : "waiting...",
           processed
             ? processed.map((item) =>
                 item.error
