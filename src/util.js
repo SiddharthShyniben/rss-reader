@@ -10,16 +10,22 @@ export const parseFeed = async (feed) => {
       .then((response) => response.text())
       .then((str) => new window.DOMParser().parseFromString(str, "text/xml"))
       .then((data) => {
-        console.log(data);
         const items = Array.from(data.querySelectorAll("item"));
+        const source = data.querySelector("channel>title").innerHTML;
 
         return items.map((e) => {
           return {
-            source: data.querySelector("channel>title").innerHTML,
+            source,
             title: e.querySelector("title")?.innerHTML,
             link: e.querySelector("link")?.innerHTML,
             creator: e.querySelector("dc\\:creator")?.innerHTML,
             date: e.querySelector("pubDate")?.innerHTML,
+            description: decodeEntities(
+              e.querySelector("description")?.innerHTML || "",
+            ),
+            categories: [...e.querySelectorAll("category")].map(
+              (x) => x.innerHTML,
+            ),
           };
         });
       });
@@ -29,3 +35,11 @@ export const parseFeed = async (feed) => {
 
   return all.sort((a, b) => new Date(b.date) - new Date(a.date));
 };
+
+export function decodeEntities(encodedString) {
+  var textArea = document.createElement("textarea");
+  textArea.innerHTML = encodedString;
+  return textArea.value;
+}
+
+export const truncate = (input, len) => input.length > len ? `${input.substring(0, len)}...` : input;

@@ -1,17 +1,23 @@
 import m from "mithril";
+import timeAgo from "@nuff-said/time-ago";
+
 import { addToFeed, getFeed } from "./db";
 import Navbar from "./navbar";
 import { feed } from "./state";
-import { parseFeed } from "./util";
+import { parseFeed, truncate } from "./util";
 
 let inputVisible = false;
 
+const f = feed();
+const feedItems = getFeed(f);
+let processed;
+parseFeed(feedItems).then((x) => {
+  processed = x;
+  m.redraw();
+});
+
 m.mount(document.body, {
   view() {
-    const f = feed();
-    const feedItems = getFeed(f);
-    parseFeed(feedItems).then(console.log);
-
     return [
       m(Navbar),
 
@@ -46,14 +52,64 @@ m.mount(document.body, {
       ]),
 
       m("section", { class: "section" }, [
-        m("div", { class: "container" }, [
-          m("h1", { class: "title" }, "Hello, world!"),
-          m("p", { class: "subtitle" }, [
-            "Da feed has ",
-            feedItems.length,
-            " items",
-          ]),
-        ]),
+        m(
+          "div",
+          { class: "container" },
+          // processed
+          //   ? processed.map((item) =>
+          //       m("div", { class: "block" }, [
+          //         m("div", { class: "card" }, [
+          //           m("div", { class: "card-content" }, [
+          //             m(
+          //               "p",
+          //               { class: "is-size-6" },
+          //               item.categories
+          //                 .flatMap((x) => [m("a", "#" + x), ", "])
+          //                 .slice(0, -1),
+          //             ),
+          //             m("h2", { class: "title my-2" }, item.title),
+          //             m("p", { class: "subtitle" }, item.source),
+          //             // m("div", { class: "content" }, m.trust(item.description)),
+          //           ]),
+          //         ]),
+          //       ]),
+          //     )
+          //   : "waiting...",
+          // processed
+          //   ? m("table", { class: "table" }, [
+          //       m(
+          //         "tbody",
+          //         processed.map((item) => m("tr", [m("td", item.title)])),
+          //       ),
+          //     ])
+          //   : "waiting...",
+          processed
+            ? processed.map((item) =>
+                m(
+                  "div",
+                  { class: "block" },
+                  m("article", { class: "media" }, [
+                    m(
+                      "div",
+                      { class: "media-content" },
+                      m("div", { class: "content" }, [
+                        m("p", [
+                          m("strong", item.title),
+                          " ",
+                          m(
+                            "small",
+                            timeAgo(new Date(item.date)),
+                          ),
+                        m("br"),
+                        m("div", {class: "content"}, m.trust(truncate(item.description || "", 300)))
+                        ]),
+                      ]),
+                    ),
+                  ]),
+                ),
+              )
+            : "waiting..",
+        ),
       ]),
     ];
   },

@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/SiddharthShyniben/rss-reader#readme",
   "dependencies": {
+    "@nuff-said/time-ago": "^1.0.1",
     "es6-promise-promise": "^1.0.0",
     "mithril": "^2.2.2",
     "mithril-stream": "^2.0.0"

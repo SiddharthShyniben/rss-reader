@@ -1,0 +1,34 @@
+
+CSS Tricks=https://css-tricks.com/feed/
+DEV=https://dev.to/feed
+Mozilla Hacks=https://hacks.mozilla.org/feed/
+JS Weekly=https://cprss.s3.amazonaws.com/javascriptweekly.com.xml
+HackerNews=https://hnrss.org/frontpage
+HackerNoon=https://hackernoon.com/feed
+TechCrunch=http://feeds.feedburner.com/TechCrunch
+Josh W Comeau=https://www.joshwcomeau.com/rss.xml
+Mac Wright=https://macwright.com/rss.xml
+Tania=https://www.taniarascia.com/rss.xml
+Intrigue=https://www.internationalintrigue.io/feed/
+MDN Blog=https://developer.mozilla.org/en-US/blog/rss.xml
+MDN=https://github.com/mdn/content/commits/main.atom
+Daring Fireball=https://daringfireball.net/feeds/main
+Smashing Magazine=https://www.smashingmagazine.com/feed
+Codrops=https://tympanus.net/codrops/feed/
+Specky Boy=https://speckyboy.com/feed/
+CSS Weekly=https://feeds.feedburner.com/CSS-Weekly
+A List Apart=https://alistapart.com/main/feed/
+
+AirBnB Engineering=https://https://medium.com/feed/airbnb-engineering
+Pinterest Engineering=https://medium.com/feed/@Pinterest_Engineering
+GitHub=https://github.blog/all.atom
+
+Raptitude=https://www.raptitude.com/feed/
+
+Overreacted=https://overreacted.io/rss.xml
+Joel=https://www.joelonsoftware.com/feed/
+Kent C Dodds=https://buttondown.email/kentcdodds/rss
+Programming Is Terrible=https://programmingisterrible.com/rss
+TinyProjects=https://tinyprojects.dev/feed.xml
+2ality=https://2ality.com/feeds/posts.atom
+Coding Horror=https://blog.codinghorror.com/rss/
