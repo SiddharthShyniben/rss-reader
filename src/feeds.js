@@ -8,16 +8,26 @@ import { parseFeed, truncate } from "./util";
 
 export default function Feeds() {
   let inputVisible = false;
+  let processing = true;
   let f, feedItems, processed;
 
   const loadFeed = () =>
     parseFeed(feedItems, (processed = [])).then((x) => {
       processed = x.filter(Boolean);
       m.redraw();
+      processing = false;
     });
+
+  feed.map(() => {
+    processing = true;
+    f = feed();
+    feedItems = getFeed(f);
+    loadFeed();
+  });
 
   return {
     oninit() {
+      processing = true;
       f = feed();
       feedItems = getFeed(f);
       loadFeed();
@@ -157,10 +167,20 @@ export default function Feeds() {
                 ),
               ),
             ])
-          : m("div", { class: "lds-ripple is-absolute-center" }, [
-              m("div"),
-              m("div"),
-            ]),
+          : processing
+            ? m("div", { class: "lds-ripple is-absolute-center" }, [
+                m("div"),
+                m("div"),
+              ])
+            : m(
+                "div",
+                { class: "container" },
+                m("div", { class: "section is-size-4" }, [
+                  m("strong", "This feed is empty."),
+                  m("br"),
+                  "Add new items to your feed by clicking the button at the bottom right corner",
+                ]),
+              ),
       ];
     },
   };

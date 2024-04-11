@@ -1,8 +1,9 @@
 import m from "mithril";
-import { getFeeds } from "./db";
+import { createFeed, getFeeds } from "./db";
 import { feed } from "./state";
 
 export default function Navbar() {
+  let showNewInput = false;
   return {
     view(vnode) {
       return [
@@ -49,28 +50,69 @@ export default function Navbar() {
               m(
                 "div",
                 { class: "navbar-start ml-6" },
-                [
-                  vnode.attrs.feeds
-                    ? m("div", { class: "tabs" }, [
-                        m(
-                          "ul",
-                          { class: "is-borderless" },
-                          Object.keys(getFeeds()).map((title) =>
-                            m(
-                              "li",
-                              {
-                                class: feed() == title ? "is-active" : void 0,
-                                onclick() {
-                                  feed(title);
-                                },
+                vnode.attrs.feeds
+                  ? m("div", { class: "tabs" }, [
+                      m("ul", { class: "is-borderless" }, [
+                        ...Object.keys(getFeeds()).map((title) =>
+                          m(
+                            "li",
+                            {
+                              class: feed() == title ? "is-active" : void 0,
+                              onclick() {
+                                feed(title);
                               },
-                              m("a", { class: "navbar-item" }, title),
-                            ),
+                            },
+                            m("a", { class: "navbar-item" }, title),
                           ),
                         ),
-                      ])
-                    : null,
-                ].filter(Boolean),
+                        m(
+                          "li",
+                          m(
+                            "a",
+                            {
+                              class: "navbar-item",
+                            },
+                            [
+                              showNewInput
+                                ? m("input", {
+                                    class: "input is-smaller",
+                                    placeholder: "feed name...",
+                                    onkeydown(e) {
+                                      if (e.key == "Enter") {
+                                        createFeed(e.target.value);
+                                        feed(e.target.value);
+                                        e.target.value = "";
+                                        showNewInput = false;
+                                      }
+                                    },
+                                  })
+                                : m(
+                                    "span",
+                                    {
+                                      class: "icon-text",
+                                      onclick() {
+                                        showNewInput = !showNewInput;
+                                      },
+                                    },
+                                    [
+                                      m(
+                                        "span",
+                                        {
+                                          class:
+                                            "material-symbols-outlined is-size-4",
+                                        },
+                                        "add",
+                                      ),
+                                      m("span", "New"),
+                                    ],
+                                  ),
+                              ,
+                            ],
+                          ),
+                        ),
+                      ]),
+                    ])
+                  : undefined,
               ),
             ]),
           ],

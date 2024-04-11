@@ -6,6 +6,11 @@ let cache = null;
 
 export const getFeeds = () => _getAll();
 export const getFeed = (id) => _getAll()[id];
+export const createFeed = (id) => {
+  const feeds = _getAll();
+  feeds[id] = [];
+  _set(feeds);
+};
 export const deleteFeed = (id) => {
   const feeds = _getAll();
   delete feeds[id];
