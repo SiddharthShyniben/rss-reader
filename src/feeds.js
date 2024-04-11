@@ -2,14 +2,21 @@ import m from "mithril";
 import Navbar from "./navbar";
 import timeAgo from "@nuff-said/time-ago";
 
-import { addToFeed, getFeed } from "./db";
+import { addToFeed, deleteFeed, getFeed, getFeeds } from "./db";
 import { feed } from "./state";
 import { parseFeed, truncate } from "./util";
 
 export default function Feeds() {
   let inputVisible = false;
   let processing = true;
-  let f, feedItems, processed;
+  let confirmation = false;
+
+  let f, feedItems, processed, feedsCount;
+
+  const firstTime = !localStorage.getItem("visited");
+  if (firstTime) localStorage.setItem("visited", true);
+
+  let modalShow = true;
 
   const loadFeed = () =>
     parseFeed(feedItems, (processed = [])).then((x) => {
@@ -22,6 +29,7 @@ export default function Feeds() {
     processing = true;
     f = feed();
     feedItems = getFeed(f);
+    feedsCount = Object.keys(getFeeds()).length;
     loadFeed();
   });
 
@@ -30,10 +38,41 @@ export default function Feeds() {
       processing = true;
       f = feed();
       feedItems = getFeed(f);
+      feedsCount = Object.keys(getFeeds()).length;
       loadFeed();
     },
     view() {
       return [
+        firstTime
+          ? m("div", { class: "modal" + (modalShow ? " is-active" : "") }, [
+              m("div", {
+                class: "modal-background",
+                onclick() {
+                  modalShow = false;
+                },
+              }),
+              m(
+                "div",
+                { class: "modal-content" },
+                m("div", { class: "card" }, [
+                  m("section", { class: "modal-card-body" }, [
+                    m("p", m("strong", "Welcome to Reed!")),
+                    m(
+                      "p",
+                      "Reed is a small, no-nonsense, browser-based RSS feed reader. Simply add RSS feed URLs and enjoy!",
+                    ),
+                  ]),
+                ]),
+              ),
+              m("button", {
+                class: "modal-close is-large",
+                "aria-label": "close",
+                onclick() {
+                  modalShow = false;
+                },
+              }),
+            ])
+          : undefined,
         m(Navbar, { feeds: true }),
 
         m("div", { class: "fab-area" }, [
@@ -74,14 +113,41 @@ export default function Feeds() {
                 m.route.set("/feed-settings/:feed", { feed: feed() });
               },
             },
-            [
-              m(
-                "span",
-                { class: "icon" },
-                m("span", { class: "material-symbols-outlined" }, "settings"),
-              ),
-            ],
+            m(
+              "span",
+              { class: "icon" },
+              m("span", { class: "material-symbols-outlined" }, "settings"),
+            ),
           ),
+          feedsCount > 1
+            ? m(
+                "button",
+                {
+                  class: "button is-danger is-dark fab ml-3",
+                  onclick() {
+                    if (!confirmation) {
+                      confirmation = true;
+                      setTimeout(() => {
+                        confirmation = false;
+                        m.redraw();
+                      }, 5000);
+                    } else {
+                      deleteFeed(f);
+                      feed(Object.keys(getFeeds())[0]);
+                    }
+                  },
+                },
+                m(
+                  "span",
+                  { class: "icon" },
+                  m(
+                    "span",
+                    { class: "material-symbols-outlined" },
+                    confirmation ? "check" : "delete",
+                  ),
+                ),
+              )
+            : undefined,
         ]),
 
         processed.length
@@ -178,7 +244,7 @@ export default function Feeds() {
                 m("div", { class: "section is-size-4" }, [
                   m("strong", "This feed is empty."),
                   m("br"),
-                  "Add new items to your feed by clicking the button at the bottom right corner",
+                  "Add new items to your feed by clicking the button at the bottom right corner.",
                 ]),
               ),
       ];
