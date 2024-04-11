@@ -81,7 +81,8 @@ export default function Feeds() {
         m("div", { class: "fab-area" }, [
           m("input", {
             class:
-              "input link is-small mr-5 " + (inputVisible ? "visible" : ""),
+              "input link is-small mr-5 has-background-dark " +
+              (inputVisible ? "visible" : ""),
             placeholder: "Add an RSS feed URL",
             onkeydown(e) {
               if (e.key == "Enter") {
