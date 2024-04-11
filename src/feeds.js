@@ -8,18 +8,19 @@ import { parseFeed, truncate } from "./util";
 
 export default function Feeds() {
   let inputVisible = false;
-
   let f, feedItems, processed;
+
+  const loadFeed = () =>
+    parseFeed(feedItems, (processed = [])).then((x) => {
+      processed = x.filter(Boolean);
+      m.redraw();
+    });
 
   return {
     oninit() {
-      // TODO: autoupdate
       f = feed();
       feedItems = getFeed(f);
-      parseFeed(feedItems).then((x) => {
-        processed = x.filter(Boolean);
-        m.redraw();
-      });
+      loadFeed();
     },
     view() {
       return [
@@ -35,6 +36,7 @@ export default function Feeds() {
                 addToFeed(f, e.target.value);
                 e.target.value = "";
                 inputVisible = false;
+                loadFeed();
               }
             },
           }),
@@ -72,13 +74,13 @@ export default function Feeds() {
           ),
         ]),
 
-        m("section", { class: "section" }, [
-          m(
-            "div",
-            { class: "container" },
-            processed
-              ? processed.map((item) =>
-                  item.error // TODO: Add tags
+        processed.length
+          ? m("section", { class: "section" }, [
+              m(
+                "div",
+                { class: "container" },
+                processed.map((item) =>
+                  item.error
                     ? m(
                         "div",
                         { class: "block" },
@@ -114,6 +116,14 @@ export default function Feeds() {
                               { class: "media-content" },
                               m("div", { class: "content" }, [
                                 m("p", [
+                                  ...item.categories.map((x) =>
+                                    m(
+                                      "span",
+                                      { class: "tag mr-1 mb-2" },
+                                      "#" + x,
+                                    ),
+                                  ),
+                                  ...(item.categories.length ? [m("br")] : []),
                                   m(
                                     "a",
                                     {
@@ -144,10 +154,13 @@ export default function Feeds() {
                         ),
                         m("hr"),
                       ],
-                )
-              : "waiting..",
-          ),
-        ]),
+                ),
+              ),
+            ])
+          : m("div", { class: "lds-ripple is-absolute-center" }, [
+              m("div"),
+              m("div"),
+            ]),
       ];
     },
   };

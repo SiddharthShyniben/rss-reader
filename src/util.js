@@ -23,7 +23,7 @@ export const parseFeed = async (feed) => {
             title: repairCDATA(e.querySelector("title")?.innerHTML || ""),
             link: repairCDATA(e.querySelector("link")?.innerHTML || ""),
             creator: repairCDATA(
-              // FIXME:
+              // FIXME: how do we do creator again??
               e.querySelector("dc\\:creator")?.innerHTML || "",
             ),
             date: repairCDATA(e.querySelector("pubDate")?.innerHTML || ""),
