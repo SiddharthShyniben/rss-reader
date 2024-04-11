@@ -1,7 +1,8 @@
 import m from "mithril";
 
 import Navbar from "./navbar";
-import { addToFeed, getFeed, removeFromFeed } from "./db";
+import { addToFeed, getFeed, removeFromFeed, renameFeed } from "./db";
+import { feed as _feed } from "./state";
 
 export default function Settings() {
   let feed, items;
@@ -22,7 +23,22 @@ export default function Settings() {
             "div",
             { class: "container" },
             m("h1", { class: "title" }, `Settings for ${feed}`),
-            m("h2", { class: "title is-6" }, "RSS Feeds"),
+            m("h2", { class: "title is-6" }, "Rename feed"),
+            m("input", {
+              class: "input",
+              placeholder: "New feed name...",
+              onkeydown(e) {
+                if (e.key == "Enter") {
+                  const name = e.target.value;
+                  renameFeed(feed, name);
+                  _feed.map((feed) => {
+                    m.route.set("/settings/:feed", { feed: name });
+                  });
+                  _feed(name);
+                }
+              },
+            }),
+            m("h2", { class: "title is-6 mt-6" }, "RSS Feeds"),
             m(
               "table",
               { class: "table" },

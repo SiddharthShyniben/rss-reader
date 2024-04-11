@@ -4,6 +4,8 @@ import { feed } from "./state";
 
 export default function Navbar() {
   let showNewInput = false;
+  const f = feed();
+  console.log({ f });
   return {
     view(vnode) {
       return [

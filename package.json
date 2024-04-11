@@ -4,7 +4,7 @@
   "description": "An RSS reader web app",
   "main": "index.js",
   "scripts": {
-    "start": "webpack ./src/index.js --output-path ./bin --watch",
+    "start": "webpack --mode=development ./src/index.js --output-path ./bin --watch",
     "serve": "lite-server"
   },
   "repository": {

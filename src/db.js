@@ -11,9 +11,17 @@ export const createFeed = (id) => {
   feeds[id] = [];
   _set(feeds);
 };
+
 export const deleteFeed = (id) => {
   const feeds = _getAll();
   delete feeds[id];
+  _set(feeds);
+};
+
+export const renameFeed = (oldName, newName) => {
+  const feeds = _getAll();
+  feeds[newName] = feeds[oldName];
+  delete feeds[oldName];
   _set(feeds);
 };
 
@@ -62,7 +70,10 @@ const _validate = (object) => {
     "data is not an object",
   );
   for (const k in object) {
-    assert(Array.isArray(object[k], `feed ${k} is not an array`));
+    assert(
+      Array.isArray(object[k]),
+      `feed ${k} is not an array: ${JSON.stringify(object)}`,
+    );
     assert(
       object[k].every((item) => typeof item == "string"),
       "all feed items are not strings",

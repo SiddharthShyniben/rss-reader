@@ -11,7 +11,10 @@ export default function Feeds() {
   let processing = true;
   let confirmation = false;
 
-  let f, feedItems, processed, feedsCount;
+  let f,
+    feedItems = [],
+    processed,
+    feedsCount;
 
   const firstTime = !localStorage.getItem("visited");
   if (firstTime) localStorage.setItem("visited", true);
@@ -25,21 +28,21 @@ export default function Feeds() {
       processing = false;
     });
 
-  feed.map(() => {
-    processing = true;
-    f = feed();
-    feedItems = getFeed(f);
-    feedsCount = Object.keys(getFeeds()).length;
-    loadFeed();
-  });
-
   return {
     oninit() {
       processing = true;
       f = feed();
-      feedItems = getFeed(f);
+      feedItems = getFeed(f) || [];
       feedsCount = Object.keys(getFeeds()).length;
       loadFeed();
+
+      feed.map((v) => {
+        processing = true;
+        f = v;
+        feedItems = getFeed(f) || [];
+        feedsCount = Object.keys(getFeeds()).length;
+        loadFeed();
+      });
     },
     view() {
       return [
